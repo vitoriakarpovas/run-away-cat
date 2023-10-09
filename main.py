@@ -64,8 +64,8 @@ while True:
     pressed = pygame.key.get_pressed()
 
     #Verifica qual tecla (seta) foi pressionada e atualiza o vetor Posicao de acordo com a Velocidade
-    if pressed[pygame.K_LEFT]: posicaoPapaBolinhas[0] -= velocidadePapaBolinhas[0]
-    if pressed[pygame.K_RIGHT]: posicaoPapaBolinhas[0] += velocidadePapaBolinhas[0]
+    if pressed[pygame.K_LEFT]: posicaoGato[0] -= velocidadeGato
+    if pressed[pygame.K_RIGHT]: posicaoGato[0] += velocidadeGato
 
     #blita a imagem de fundo na tela
     screen.blit(imagem, (0, 0))
@@ -73,37 +73,12 @@ while True:
     # Desenha o gato na tela
     screen.blit(gato, posicaoGato)
 
-
     # Velocidade de queda do círculo Vermelho
-    Y_Gato += 5 
-
-    # Valores da bola vermelha é atribuido 
-    posicaoBolasVermelhas = [X_vermelho,Y_vermelho]
-   
-    # Desenha o círculo vermelho
-    pygame.draw.circle(screen, RED, posicaoBolasVermelhas, 10)
-
-    # Se o círculo vermelho ultapassar a  tela ela é reiniciada
-    if Y_vermelho > 600 or Y_vermelho < 20:
-        direcao_vermelha *= -1
-            
-
-    # Se o papa bolinhas encostar no círculo vermelho o círculo vermelho é reiniciado
-    # CB: Círculo Branco    CV: Círculo Vermelho 
-    #        y + altura CB          y CV                    y CB                y + altura CV            x + largura CB           x CV                x CB                 x CV
-    if (posicaoPapaBolinhas[1] + 20 >= Y_vermelho - 10  and posicaoPapaBolinhas[1] - 20 <= Y_vermelho + 10) and (posicaoPapaBolinhas[0] +20  >= X_vermelho - 10 and posicaoPapaBolinhas[0] - 20 <= X_vermelho + 20): 
-        criar = True
-        placar = placar+1
-        pygame.mixer.music.load('catch.mp3')
-        pygame.mixer.music.play(0)
+    Y_gato -= 5 
 
     # renderizando as fontes do placar na tela
     score1 = font.render('Placar '+str(placar), True, (WHITE))
     screen.blit(score1, (600, 50))
-
-    #rendrizando as fontes do cronometro na tela do usuario
-    timer1 = font.render('Tempo ' + str(temporizador), True, (YELLOW))
-    screen.blit(timer1, (50, 50))
         
     # Atualiza a tela visivel ao usuario
     pygame.display.flip()
