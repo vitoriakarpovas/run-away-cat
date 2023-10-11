@@ -15,7 +15,7 @@ WHITE = (255, 255, 255)
 YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
 
-font = pygame.font.SysFont('sans', 40)
+font = pygame.font.SysFont('sans', 50)
 placar = 0
 clock = pygame.time.Clock()
 CLOCKTICK = pygame.USEREVENT + 1
@@ -36,13 +36,26 @@ class Gato:
             self.rect.bottom = 626
             self.velocidade_y = -20  # "Pular" para cima
 
+class Plataforma:
+    def __init__(self):
+        self.image = pygame.Surface((120, 20))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (300, 550)  # Defina a posição da plataforma
+
+    def appear(self):
+        screen.blit(self.image, self.rect.topleft)
+
 gato = Gato()
+plataforma = Plataforma()
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == CLOCKTICK:
+            placar += 2
 
     pressed = pygame.key.get_pressed()
     if pressed[pygame.K_LEFT]:
@@ -50,11 +63,16 @@ while True:
     if pressed[pygame.K_RIGHT]:
         gato.rect.x += 5
 
+    if gato.rect.colliderect(plataforma.rect) and gato.velocidade_y > 0:
+        gato.velocidade_y = -20
+
     screen.blit(imagem, (0, 0))
     screen.blit(gato.image, gato.rect)
     gato.update()
 
-    score1 = font.render('Placar ' + str(placar), True, WHITE)
-    screen.blit(score1, (600, 50))
+    plataforma.appear()
+
+    score1 = font.render('Placar ' + str(placar), True, YELLOW)
+    screen.blit(score1, (350, 50))
     pygame.display.flip()
     clock.tick(60)
