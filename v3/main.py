@@ -56,9 +56,9 @@ plataformas.append(primeira_plataforma)
 def criar_plataformas():
     x = random.randint(0, size[0] - 120)
     
-    # Garanta que a nova plataforma tenha uma distância máxima de 100 pixels da última plataforma criada
+    # Garanta que a nova plataforma tenha uma distância máxima de 50 pixels da última plataforma criada
     if plataformas:
-        while abs(x - plataformas[-1].rect.x) < 70:
+        while abs(x - plataformas[-1].rect.x) < 50:
             x = random.randint(0, size[0] - 120)
     
     if plataformas:
@@ -73,7 +73,7 @@ def criar_plataformas():
     plataformas.append(nova_plataforma)
 
 
-for i in range(3):
+for i in range(4):
     criar_plataformas()
 
 while True:
