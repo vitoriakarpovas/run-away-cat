@@ -55,14 +55,23 @@ plataformas.append(primeira_plataforma)
 
 def criar_plataformas():
     x = random.randint(0, size[0] - 120)
-    altura_anterior = plataformas[-1].rect.y
-    y = altura_anterior - 100  # Defina a diferença de altura desejada (100 pixels)
+    
+    # Garanta que a nova plataforma tenha uma distância máxima de 100 pixels da última plataforma criada
+    if plataformas:
+        while abs(x - plataformas[-1].rect.x) < 70:
+            x = random.randint(0, size[0] - 120)
+    
+    if plataformas:
+        y = plataformas[-1].rect.y - 100  # Defina a diferença de altura desejada (100 pixels)
+    else:
+        y = 400  # Defina uma altura inicial para a primeira plataforma
     if y < 100:
         y = 100  # Garanta que as plataformas não subam muito alto
     width = 120
     height = 20
     nova_plataforma = Plataforma(x, y, width, height)
     plataformas.append(nova_plataforma)
+
 
 for i in range(3):
     criar_plataformas()
@@ -82,8 +91,8 @@ while True:
         gato.rect.x += 5
 
     for plataforma in plataformas:
-        if gato.rect.colliderect(plataforma.rect) and gato.velocidade_y > 0:
-            if gato.rect.bottom <= plataforma.rect.centery:
+        if gato.rect.colliderect(plataforma.rect):
+            if gato.velocidade_y > 0 and gato.rect.bottom <= plataforma.rect.centery:
                 gato.velocidade_y = -20
 
     if gato.rect.left <= 0:
