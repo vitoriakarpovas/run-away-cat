@@ -83,7 +83,8 @@ while True:
 
     for plataforma in plataformas:
         if gato.rect.colliderect(plataforma.rect) and gato.velocidade_y > 0:
-            gato.velocidade_y = -20
+            if gato.rect.bottom <= plataforma.rect.centery:
+                gato.velocidade_y = -20
 
     if gato.rect.left <= 0:
         gato.rect.left = 0
