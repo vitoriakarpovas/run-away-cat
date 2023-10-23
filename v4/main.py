@@ -14,6 +14,7 @@ platform = pygame.image.load("tabua.png")
 home = pygame.image.load("home.png")
 controles = pygame.image.load("controles.png")
 controles = pygame.transform.scale(controles, (450, 450))
+game_over = pygame.image.load("game over.png")
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -101,10 +102,14 @@ while True:
                 if pos[0] > 21 and pos[0] < 131 and pos[1] > 547 and pos[1] < 608:
                     tela = 3
             if tela == 3:
-                print(pos)
                 if pos[0] > 455 and pos[0] < 493 and pos[1] > 107 and pos[1] < 156:
                     tela = 1
-
+            if tela == 4:
+                print(pos)
+                if pos[0] > 50 and pos[0] < 295 and pos[1] > 455 and pos[1] < 578:
+                    tela = 2
+                if pos[0] > 349 and pos[0] < 591 and pos[1] > 455 and pos[1] < 578:
+                    tela = 1
 
     if tela == 1:
         screen.blit(home, (0, 0))
@@ -142,4 +147,8 @@ while True:
 
     if tela == 3:
         screen.blit(controles, (80, 80))
+        pygame.display.flip()
+
+    if tela == 4:
+        screen.blit(game_over, (0, 0))
         pygame.display.flip()
