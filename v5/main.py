@@ -34,16 +34,20 @@ class Gato:
     def __init__(self):
         self.image = pygame.transform.scale(gato, (100, 100))
         self.rect = self.image.get_rect()
-        self.rect.midbottom = (size[0] // 2, size[1])  # Define a posição inicial do gato no chão
+        self.rect.midbottom = (size[0] // 2, size[1])  # Inicia no chão
         self.velocidade_y = 0
 
     def update(self):
         self.velocidade_y += 1  # Simula a gravidade
         self.rect.y += self.velocidade_y
 
-        if self.rect.bottom > size[1]:  # Quando toca na parte de baixo da tela
+        if self.rect.bottom > size[1]:
             self.rect.bottom = size[1]
-            self.velocidade_y = -20  # "Pular" para cima
+            self.velocidade_y = -20  # "Pular" novamente
+
+        # Evite que o gato suba muito perto da parte de cima da tela
+        if self.rect.top < 100:
+            self.rect.top = 100
 
 class Plataforma:
     def __init__(self, x, y, width, height):
@@ -67,25 +71,22 @@ def mover_plataformas():
         plataforma.rect.y += VELOCIDADE_PLATAFORMA
 
 def criar_plataformas():
-    x = random.randint(0, size[0] - 120)
-    
-    if plataformas:
-        while abs(x - plataformas[-1].rect.x) < 50:
-            x = random.randint(0, size[0] - 120)
-    
-    if plataformas:
-        y = plataformas[-1].rect.y - 100
+    if not plataformas:
+        y = size[1] - 20  # Defina a altura da primeira plataforma (20 pixels acima do chão)
     else:
-        y = 400
+        y = plataformas[-1].rect.y - random.randint(100, 150)  # Diferença de altura aleatória
 
     if y < 100:
-        y = 100
-    
+        y = 100  # Garanta que as plataformas não subam muito alto
+
+    # Calcule a posição horizontal da próxima plataforma com base na posição da plataforma anterior
+    x = random.randint(max(0, plataformas[-1].rect.x - 50), min(size[0] - 120, plataformas[-1].rect.x + 50))
+
     width = 120
     height = 20
     nova_plataforma = Plataforma(x, y, width, height)
     plataformas.append(nova_plataforma)
-
+    
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -140,6 +141,7 @@ while True:
         remover_plataforma()
         criar_plataformas()
         mover_plataformas()
+        print(gato.rect.y)
 
         for plataforma in plataformas[:4]:
             screen.blit(plataforma.image, plataforma.rect.topleft)
