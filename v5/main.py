@@ -14,7 +14,7 @@ platform = pygame.image.load("tabua.png")
 home = pygame.image.load("home.png")
 controles = pygame.image.load("controles.png")
 controles = pygame.transform.scale(controles, (450, 450))
-game_over = pygame.image.load("game over.png")
+game_over = pygame.image.load("game_over.png")
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -28,6 +28,7 @@ tela_controle = True
 clock = pygame.time.Clock()
 CLOCKTICK = pygame.USEREVENT + 1
 pygame.time.set_timer(CLOCKTICK, 1000)
+VELOCIDADE_PLATAFORMA = 5
 
 class Gato:
     def __init__(self):
@@ -47,12 +48,8 @@ class Gato:
 class Plataforma:
     def __init__(self, x, y, width, height):
         self.image = pygame.transform.scale(platform, (130, 40))
-        #self.image = pygame.image.load("tabua.png")
-        #self.image = pygame.Surface((width, height))
-        #self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
-
 
 gato = Gato()
 plataformas = []
@@ -60,40 +57,42 @@ plataformas = []
 primeira_plataforma = Plataforma(size[0] // 2 - 60, 500, 120, 20)
 plataformas.append(primeira_plataforma)
 
-def mover_plataformas():
-  for plataforma in plataformas[:4]:  # Mova apenas as 4 primeiras plataformas visíveis
-      plataforma.rect.y += 2
+def remover_plataforma():
+    if plataformas:
+        if plataformas[0].rect.top > size[1]:
+            plataformas.pop(0)
 
+def mover_plataformas():
+    for plataforma in plataformas[:4]:  
+        plataforma.rect.y += VELOCIDADE_PLATAFORMA
 
 def criar_plataformas():
     x = random.randint(0, size[0] - 120)
-
-    # Garanta que a nova plataforma tenha uma distância máxima de 50 pixels da última plataforma criada
+    
     if plataformas:
-        while abs(x - plataformas[-1].rect.x) < 100:
+        while abs(x - plataformas[-1].rect.x) < 50:
             x = random.randint(0, size[0] - 120)
-
+    
     if plataformas:
-        y = plataformas[-1].rect.y - 100  # Defina a diferença de altura desejada (100 pixels)
+        y = plataformas[-1].rect.y - 100
     else:
-        y = 400  # Defina uma altura inicial para a primeira plataforma
+        y = 400
+
     if y < 100:
-        y = 100  # Garanta que as plataformas não subam muito alto
+        y = 100
+    
     width = 120
     height = 20
     nova_plataforma = Plataforma(x, y, width, height)
     plataformas.append(nova_plataforma)
 
-
 while True:
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
         if event.type == CLOCKTICK:
-            if tela == 2:
-                placar += 2
+            placar += 2
         if event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
             if tela == 1:
@@ -114,7 +113,7 @@ while True:
     if tela == 1:
         screen.blit(home, (0, 0))
         pygame.display.flip()
-
+        
     if tela == 2:
         pressed = pygame.key.get_pressed()
         if pressed[pygame.K_LEFT]:
@@ -138,10 +137,12 @@ while True:
         screen.blit(gato.image, gato.rect)
         gato.update()
 
+        remover_plataforma()
         criar_plataformas()
+        mover_plataformas()
 
         for plataforma in plataformas[:4]:
-          screen.blit(plataforma.image, plataforma.rect.topleft)
+            screen.blit(plataforma.image, plataforma.rect.topleft)
 
         score1 = font.render('Placar ' + str(placar), True, YELLOW)
         screen.blit(score1, (350, 50))
